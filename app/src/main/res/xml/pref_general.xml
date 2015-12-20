@@ -1,0 +1,35 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+  <PreferenceCategory
+    android:dependency="@string/pref_key_seriesguide_integration"
+    android:key="@string/pref_key_category_general"
+    android:title="@string/pref_title_general">
+
+    <CheckBoxPreference
+      android:key="@string/pref_key_launcher_intent"
+      android:defaultValue="false"
+      android:title="@string/pref_title_launcher_intent"
+      android:summaryOn="@string/pref_summary_launcher_intent_on"
+      android:summaryOff="@string/pref_summary_launcher_intent_off"/>
+  </PreferenceCategory>
+
+
+  <PreferenceCategory
+    android:key="@string/pref_key_category_integrations"
+    android:title="@string/pref_title_integrations">
+
+    <com.tasomaniac.android.widget.IntegrationPreference
+      android:defaultValue="true"
+      android:key="@string/pref_key_seriesguide_integration"
+      android:persistent="false"
+      android:summaryOff="@string/pref_summary_seriesguide_installed"
+      android:summaryOn="@string/pref_summary_seriesguide_not_installed"
+      android:title="@string/pref_title_seriesguide_integration">
+      <intent
+        android:targetClass="com.google.android.apps.seriesguide.settings.SettingsActivity"
+        android:targetPackage="net.nurik.roman.seriesguide"/>
+    </com.tasomaniac.android.widget.IntegrationPreference>
+
+  </PreferenceCategory>
+
+</PreferenceScreen>

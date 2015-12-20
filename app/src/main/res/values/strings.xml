@@ -1,0 +1,25 @@
+<resources>
+  <string name="app_name">SeriesGuide to Plex</string>
+
+  <string name="settings_label">Settings</string>
+
+  <string name="pref_key_category_general">pref_category_general</string>
+  <string name="pref_title_general">General</string>
+
+  <string name="done">Done</string>
+
+  <string name="pref_key_launcher_intent">pref_launcher_intent</string>
+  <string name="pref_title_launcher_intent">Hide App Icon</string>
+  <string name="pref_summary_launcher_intent_on">App icon is hidden.</string>
+  <string name="pref_summary_launcher_intent_off">App icon is visible on homescreen.</string>
+
+  <string name="pref_key_category_integrations">pref_category_integrations</string>
+  <string name="pref_title_integrations">Integrations</string>
+
+  <string name="pref_key_seriesguide_integration">pref_seriesguide_integration</string>
+  <string name="pref_title_seriesguide_integration">SeriesGuide App Integration</string>
+  <string name="pref_summary_seriesguide_installed">Open SeriesGuide settings to enable this app as an extension.</string>
+  <string name="pref_summary_seriesguide_not_installed">Click here to install SeriesGuide app.</string>
+
+  <string name="error_install_seriesguide">Please install SeriesGuide App first!</string>
+</resources>

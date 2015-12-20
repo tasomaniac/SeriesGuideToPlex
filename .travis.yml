@@ -1,0 +1,26 @@
+language: android
+
+android:
+  components:
+    - platform-tools
+    - tools
+    - android-23
+    - build-tools-23.0.2
+    - extra-google-m2repository
+    - extra-android-m2repository
+
+jdk:
+  - oraclejdk7
+  - oraclejdk8
+
+script: "./gradlew assembleDebug"
+
+branches:
+  except:
+    - gh-pages
+
+sudo: false
+
+cache:
+  directories:
+    - $HOME/.gradle

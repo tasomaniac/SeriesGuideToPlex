@@ -1,0 +1,122 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.jakewharton.hugo'
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'com.github.triplet.play'
+apply plugin: 'io.fabric'
+
+Properties local_properties = new Properties()
+File localPropertiesFile = project.rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    local_properties.load(localPropertiesFile.newDataInputStream())
+}
+
+def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+def buildTime = new Date().format("yyyy-MM-dd'T'HH:mm'Z'", TimeZone.getTimeZone("UTC"))
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+    useLibrary 'org.apache.http.legacy'
+
+    defaultConfig {
+        applicationId "com.tasomaniac.seriesguide.plex"
+        minSdkVersion 15
+        targetSdkVersion rootProject.ext.compileSdkVersion
+        versionCode rootProject.ext.versionMajor * 10000 + rootProject.ext.versionMinor * 1000 + rootProject.ext.versionPatch * 100 + rootProject.ext.versionBuild
+        versionName "${rootProject.ext.versionMajor}.${rootProject.ext.versionMinor}" + ((rootProject.ext.versionPatch != 0) ? ".${rootProject.ext.versionPatch}" : "")
+        buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
+        buildConfigField "String", "BUILD_TIME", "\"${buildTime}\""
+
+        buildConfigField "String", "ANALYTICS_KEY", local_properties.analytics_key != null ?
+                "\"" + local_properties.analytics_key + "\"" : "\"\""
+
+        resConfigs "en"
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file("../distribution/debug.keystore")
+        }
+
+        release {
+            storeFile file("../distribution/" + (local_properties.release_keystore_name ?: "debug.keystore"))
+            keyAlias(local_properties.release_keystore_alias ?: "androiddebugkey")
+            storePassword(local_properties.release_keystore_pwd ?: "android")
+            keyPassword(local_properties.release_keystore_pwd2 ?: "android")
+        }
+    }
+
+    buildTypes {
+        debug {
+            ext.enableCrashlytics = false
+            applicationIdSuffix ".debug"
+            signingConfig signingConfigs.debug
+            versionNameSuffix "-debug"
+        }
+
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
+    lintOptions {
+        abortOnError true
+        textReport true
+        textOutput 'stdout'
+
+        fatal 'UnusedResources'
+        warning 'InvalidPackage'
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    dexOptions {
+        // Skip pre-dexing when running on Travis CI or when disabled via -Dpre-dex=false.
+        preDexLibraries = rootProject.ext.preDexEnabled && !rootProject.ext.ci
+    }
+}
+
+play {
+    serviceAccountEmail = local_properties.play_service_account ?: ''
+    pk12File = file("../distribution/" + (local_properties.play_key_file ?: 'no-file.p12'))
+    track = 'alpha'
+}
+
+dependencies {
+    def supportLibVersion = '23.1.1'
+
+    compile 'com.squareup.okhttp:okhttp:2.7.0'
+    compile 'com.squareup.okio:okio:1.6.0'
+    compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
+    compile 'com.squareup.retrofit:converter-moshi:2.0.0-beta2'
+
+    compile "com.android.support:support-v4:$supportLibVersion"
+    compile "com.android.support:appcompat-v7:$supportLibVersion"
+    compile "com.android.support:preference-v14:$supportLibVersion"
+    compile "com.android.support:design:$supportLibVersion"
+
+    compile "com.google.android.gms:play-services-analytics:8.4.0"
+
+    compile 'com.jakewharton.timber:timber:4.1.0'
+
+    compile 'com.google.dagger:dagger:2.0.2'
+    apt 'com.google.dagger:dagger-compiler:2.0.2'
+    provided 'org.glassfish:javax.annotation:10.0-b28'
+
+    compile 'com.uwetrottmann.seriesguide:seriesguide-api:1.2.0'
+
+    compile 'com.tasomaniac:integrationpreference-support:0.2'
+
+    // Crashlytics Kit
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
+        transitive = true
+    }
+
+    testCompile 'junit:junit:4.12'
+}

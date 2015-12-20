@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Series Guide to Plex Debug</string>
+
+    <string name="source_name">Plex Debug</string>
+</resources>
