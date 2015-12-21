@@ -24,7 +24,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.view.View;
@@ -32,7 +31,6 @@ import android.view.View;
 import com.tasomaniac.android.widget.IntegrationPreference;
 import com.tasomaniac.seriesguide.plex.App;
 import com.tasomaniac.seriesguide.plex.R;
-import com.tasomaniac.seriesguide.plex.data.prefs.StringPreference;
 
 public class SettingsFragment extends PreferenceFragmentCompat
         implements SharedPreferences.OnSharedPreferenceChangeListener,
@@ -88,6 +86,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         plexPref.pause();
     }
 
+    @SuppressWarnings("ConstantConditions")
     @NonNull
     @Override
     public View getView() {
@@ -113,62 +112,5 @@ public class SettingsFragment extends PreferenceFragmentCompat
                             : PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
                     PackageManager.DONT_KILL_APP);
         }
-    }
-
-    /**
-     * A preference value change listener that updates the preference's summary to reflect its new
-     * value.
-     */
-    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener
-            = new Preference.OnPreferenceChangeListener() {
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object value) {
-            String stringValue = value.toString();
-
-            if (preference instanceof ListPreference) {
-                // For list preferences, look up the correct display value in
-                // the preference's 'entries' list.
-                ListPreference listPreference = (ListPreference) preference;
-                int index = listPreference.findIndexOfValue(stringValue);
-
-                // Set the summary to reflect the new value.
-                preference.setSummary(
-                        index >= 0
-                                ? (listPreference.getEntries()[index])
-                                .toString().replaceAll("%", "%%")
-                                : null);
-
-            } else {
-                // For all other preferences, set the summary to the value's
-                // simple string representation.
-                preference.setSummary(stringValue);
-            }
-            return true;
-        }
-    };
-
-    /**
-     * Binds a preference's summary to its value. More specifically, when the preference's value is
-     * changed, its summary (line of text below the preference title) is updated to reflect the
-     * value. The summary is also immediately updated upon calling this method. The exact display
-     * format is dependent on the type of preference.
-     */
-    public static void bindPreferenceSummaryToValue(Preference preference, StringPreference pref) {
-        setAndCallPreferenceChangeListener(preference, sBindPreferenceSummaryToValueListener, pref);
-    }
-
-    /**
-     * When the preference's value is changed, trigger the given listener. The listener is also
-     * immediately called with the preference's current value upon calling this method.
-     */
-    public static void setAndCallPreferenceChangeListener(Preference preference,
-                                                          Preference.OnPreferenceChangeListener listener,
-                                                          StringPreference pref) {
-        // Set the listener to watch for value changes.
-        preference.setOnPreferenceChangeListener(listener);
-
-        // Trigger the listener immediately with the preference's
-        // current value.
-        listener.onPreferenceChange(preference, pref.get());
     }
 }
