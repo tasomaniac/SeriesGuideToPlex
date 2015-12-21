@@ -1,10 +1,11 @@
 package com.tasomaniac.seriesguide.plex;
 
 import android.app.Application;
-import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
+import com.tasomaniac.seriesguide.plex.data.Injector;
 
 import hugo.weaving.DebugLog;
 import io.fabric.sdk.android.Fabric;
@@ -34,12 +35,12 @@ public class App extends Application {
         component.inject(this);
     }
 
-    public AppComponent component() {
-        return component;
-    }
-
-    public static App get(Context context) {
-        return (App) context.getApplicationContext();
+    @Override
+    public Object getSystemService(@NonNull String name) {
+        if (Injector.matchesService(name)) {
+            return component;
+        }
+        return super.getSystemService(name);
     }
 
     /** A tree which logs important information for crash reporting. */

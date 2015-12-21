@@ -54,7 +54,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
-        App.get(getActivity()).component().inject(this);
+        Injector.obtain(getActivity().getApplicationContext()).inject(this);
         addPreferencesFromResource(R.xml.pref_general);
 
         seriesGuidePref = (IntegrationPreference) findPreference(R.string.pref_key_seriesguide_integration);
