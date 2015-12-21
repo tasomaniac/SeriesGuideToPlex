@@ -41,7 +41,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
     private IntegrationPreference seriesGuidePref;
     private IntegrationPreference plexPref;
 
-
     public SettingsFragment() {
     }
 

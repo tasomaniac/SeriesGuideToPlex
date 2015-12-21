@@ -1,6 +1,6 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools"
-          package="com.tasomaniac.seriesguide.plex">
+<manifest package="com.tasomaniac.seriesguide.plex"
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools">
 
   <uses-permission android:name="android.permission.INTERNET"/>
 
@@ -9,11 +9,13 @@
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
   <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
-  <application android:allowBackup="true"
-               android:fullBackupContent="true"
-               android:theme="@style/Theme.SeriesGuideToPlex"
-               android:name=".App"
-               android:label="@string/app_name">
+  <application
+    android:name=".App"
+    android:allowBackup="true"
+    android:fullBackupContent="true"
+    android:icon="@mipmap/ic_launcher"
+    android:label="@string/app_name"
+    android:theme="@style/Theme.SeriesGuideToPlex">
 
     <service
       android:name=".PlexExtension"
@@ -31,16 +33,16 @@
 
     <activity
       android:name=".ui.SettingsActivity"
-      android:launchMode="singleTask"
-      android:exported="true"/>
+      android:exported="true"
+      android:launchMode="singleTask"/>
 
     <activity-alias
       android:name=".ui.MainActivity"
-      android:targetActivity=".ui.SettingsActivity"
-      android:enabled="true">
+      android:enabled="true"
+      android:targetActivity=".ui.SettingsActivity">
       <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity-alias>
 
