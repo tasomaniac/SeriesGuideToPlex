@@ -26,8 +26,8 @@
       android:summaryOn="@string/pref_summary_seriesguide_not_installed"
       android:title="@string/pref_title_seriesguide_integration">
       <intent
-        android:targetClass="com.google.android.apps.seriesguide.settings.SettingsActivity"
-        android:targetPackage="net.nurik.roman.seriesguide"/>
+        android:targetClass="com.battlelancer.seriesguide.ui.SeriesGuidePreferences"
+        android:targetPackage="com.battlelancer.seriesguide"/>
     </com.tasomaniac.android.widget.IntegrationPreference>
 
   </PreferenceCategory>
