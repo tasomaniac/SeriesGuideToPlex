@@ -20,9 +20,14 @@
   <string name="pref_title_integrations">Integrations</string>
 
   <string name="pref_key_seriesguide_integration">pref_seriesguide_integration</string>
-  <string name="pref_title_seriesguide_integration">SeriesGuide App Integration</string>
+  <string name="pref_title_seriesguide_integration">SeriesGuide App</string>
   <string name="pref_summary_seriesguide_installed">Open SeriesGuide settings to enable this app as an extension.</string>
   <string name="pref_summary_seriesguide_not_installed">Click here to install SeriesGuide app.</string>
+
+  <string name="pref_key_plex_integration">pref_plex_integration</string>
+  <string name="pref_title_plex_integration">Plex App</string>
+  <string name="pref_summary_plex_installed">Open Plex application to setup your device.</string>
+  <string name="pref_summary_plex_not_installed">Click here to install Plex app.</string>
 
   <string name="error_install_seriesguide">Please install SeriesGuide App first!</string>
 </resources>

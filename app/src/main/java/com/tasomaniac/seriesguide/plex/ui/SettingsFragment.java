@@ -26,7 +26,6 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceCategory;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.view.View;
 
@@ -42,11 +41,8 @@ public class SettingsFragment extends PreferenceFragmentCompat
     private static final String LAUNCHER_ACTIVITY_NAME = "com.tasomaniac.seriesguide.plex.ui.MainActivity";
 
     private IntegrationPreference seriesGuidePref;
-    private IntegrationPreference permissionPref;
-    private PreferenceCategory integrationsCategory;
+    private IntegrationPreference plexPref;
 
-    private boolean permissionDeniedDefinitely = false;
-    private boolean forceShowPermissionDialog;
 
     public SettingsFragment() {
     }
@@ -60,19 +56,14 @@ public class SettingsFragment extends PreferenceFragmentCompat
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        forceShowPermissionDialog = getArguments().getBoolean(SettingsActivity.EXTRA_FROM_BACKGROUND);
-    }
-
-    @Override
     public void onCreatePreferences(Bundle bundle, String s) {
         App.get(getActivity()).component().inject(this);
         addPreferencesFromResource(R.xml.pref_general);
 
         seriesGuidePref = (IntegrationPreference) findPreference(R.string.pref_key_seriesguide_integration);
         seriesGuidePref.setPersistent(true);
-        integrationsCategory = (PreferenceCategory) findPreference(R.string.pref_key_category_integrations);
+        plexPref = (IntegrationPreference) findPreference(R.string.pref_key_plex_integration);
+        plexPref.setPersistent(true);
     }
 
     public Preference findPreference(@StringRes int keyResource) {
@@ -85,6 +76,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         getPreferenceManager().getSharedPreferences()
                 .registerOnSharedPreferenceChangeListener(this);
         seriesGuidePref.resume();
+        plexPref.resume();
     }
 
     @Override
@@ -93,6 +85,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
         getPreferenceManager().getSharedPreferences()
                 .unregisterOnSharedPreferenceChangeListener(this);
         seriesGuidePref.pause();
+        plexPref.pause();
     }
 
     @NonNull
@@ -178,5 +171,4 @@ public class SettingsFragment extends PreferenceFragmentCompat
         // current value.
         listener.onPreferenceChange(preference, pref.get());
     }
-
 }

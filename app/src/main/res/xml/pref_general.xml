@@ -21,13 +21,23 @@
     <com.tasomaniac.android.widget.IntegrationPreference
       android:defaultValue="true"
       android:key="@string/pref_key_seriesguide_integration"
-      android:persistent="false"
       android:summaryOff="@string/pref_summary_seriesguide_installed"
       android:summaryOn="@string/pref_summary_seriesguide_not_installed"
       android:title="@string/pref_title_seriesguide_integration">
       <intent
         android:targetClass="com.battlelancer.seriesguide.ui.SeriesGuidePreferences"
         android:targetPackage="com.battlelancer.seriesguide"/>
+    </com.tasomaniac.android.widget.IntegrationPreference>
+
+    <com.tasomaniac.android.widget.IntegrationPreference
+      android:defaultValue="true"
+      android:key="@string/pref_key_plex_integration"
+      android:summaryOff="@string/pref_summary_plex_installed"
+      android:summaryOn="@string/pref_summary_plex_not_installed"
+      android:title="@string/pref_title_plex_integration">
+      <intent
+        android:targetClass="com.plexapp.plex.activities.MyPlexActivity"
+        android:targetPackage="com.plexapp.android"/>
     </com.tasomaniac.android.widget.IntegrationPreference>
 
   </PreferenceCategory>
