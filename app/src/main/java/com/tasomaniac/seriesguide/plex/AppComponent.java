@@ -16,6 +16,8 @@ public interface AppComponent {
 
     void inject(SettingsFragment fragment);
 
+    void inject(PlexExtension extension);
+
     /**
      * An initializer that creates the graph from an application.
      */

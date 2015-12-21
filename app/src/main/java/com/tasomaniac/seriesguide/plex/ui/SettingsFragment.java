@@ -29,12 +29,17 @@ import android.support.v7.preference.PreferenceFragmentCompat;
 import android.view.View;
 
 import com.tasomaniac.android.widget.IntegrationPreference;
-import com.tasomaniac.seriesguide.plex.App;
+import com.tasomaniac.seriesguide.plex.Analytics;
 import com.tasomaniac.seriesguide.plex.R;
+import com.tasomaniac.seriesguide.plex.data.Injector;
+
+import javax.inject.Inject;
 
 public class SettingsFragment extends PreferenceFragmentCompat
         implements SharedPreferences.OnSharedPreferenceChangeListener,
         ActivityCompat.OnRequestPermissionsResultCallback {
+
+    @Inject Analytics analytics;
 
     private static final String LAUNCHER_ACTIVITY_NAME = "com.tasomaniac.seriesguide.plex.ui.MainActivity";
 
@@ -50,6 +55,14 @@ public class SettingsFragment extends PreferenceFragmentCompat
         args.putBoolean(SettingsActivity.EXTRA_FROM_BACKGROUND, forceShowPermission);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState == null) {
+            analytics.sendScreenView("Settings");
+        }
     }
 
     @Override

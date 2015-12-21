@@ -5,7 +5,7 @@ import com.google.android.gms.analytics.Tracker;
 
 import timber.log.Timber;
 
-interface Analytics {
+public interface Analytics {
 
     void sendScreenView(String screenName);
 
