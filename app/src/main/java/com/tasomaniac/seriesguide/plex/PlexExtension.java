@@ -21,7 +21,7 @@ public class PlexExtension extends SeriesGuideExtension {
                 .setComponent(new ComponentName("com.plexapp.android", "com.plexapp.plex.activities.SearchActivity"))
                 .putExtra(SearchManager.QUERY, episode.getTitle());
 
-        publishAction(new Action.Builder("Google search", episodeIdentifier)
+        publishAction(new Action.Builder(getString(R.string.action_extension), episodeIdentifier)
                 .viewIntent(plexSearchIntent)
                 .build());
     }

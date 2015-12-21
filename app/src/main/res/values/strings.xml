@@ -30,4 +30,5 @@
   <string name="pref_summary_plex_not_installed">Click here to install Plex app.</string>
 
   <string name="error_install_seriesguide">Please install SeriesGuide App first!</string>
+  <string name="action_extension">Open in Plex</string>
 </resources>
