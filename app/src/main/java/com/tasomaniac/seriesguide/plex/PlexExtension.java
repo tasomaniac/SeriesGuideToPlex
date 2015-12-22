@@ -7,6 +7,7 @@ import android.content.Intent;
 import com.battlelancer.seriesguide.api.Action;
 import com.battlelancer.seriesguide.api.Episode;
 import com.battlelancer.seriesguide.api.SeriesGuideExtension;
+import com.tasomaniac.seriesguide.plex.data.Injector;
 
 import javax.inject.Inject;
 
@@ -16,6 +17,12 @@ public class PlexExtension extends SeriesGuideExtension {
 
     public PlexExtension() {
         super("PlexExtension");
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Injector.obtain(getApplicationContext()).inject(this);
     }
 
     @Override
