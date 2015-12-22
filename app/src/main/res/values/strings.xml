@@ -21,7 +21,8 @@
 
   <string name="pref_key_seriesguide_integration">pref_seriesguide_integration</string>
   <string name="pref_title_seriesguide_integration">SeriesGuide App</string>
-  <string name="pref_summary_seriesguide_installed">Open SeriesGuide settings to enable this app as an extension.</string>
+  <string name="pref_summary_seriesguide_installed">Open SeriesGuide -> Click a show -> Scroll -> Click
+    \"Customize Extensions\"</string>
   <string name="pref_summary_seriesguide_not_installed">Click here to install SeriesGuide app.</string>
 
   <string name="pref_key_plex_integration">pref_plex_integration</string>
