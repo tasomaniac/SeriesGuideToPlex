@@ -1,12 +1,9 @@
 package com.tasomaniac.seriesguide.plex;
 
 import android.app.Application;
-import android.content.pm.PackageManager;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
-
-import java.util.Random;
 
 import javax.inject.Singleton;
 
@@ -31,11 +28,6 @@ final class AppModule {
         return app;
     }
 
-    @Provides @Singleton
-    PackageManager providePackageManager() {
-        return app.getPackageManager();
-    }
-
     @Provides @Singleton Analytics provideAnalytics() {
         if (BuildConfig.DEBUG) {
             return new Analytics.DebugAnalytics();
@@ -45,10 +37,5 @@ final class AppModule {
         Tracker tracker = googleAnalytics.newTracker(BuildConfig.ANALYTICS_KEY);
         tracker.setSessionTimeout(300); // ms? s? better be s.
         return new Analytics.GoogleAnalytics(tracker);
-    }
-
-    @Provides @Singleton
-    Random provideRandom() {
-        return new Random();
     }
 }
