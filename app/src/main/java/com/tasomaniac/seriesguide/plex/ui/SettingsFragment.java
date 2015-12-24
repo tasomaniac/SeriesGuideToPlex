@@ -49,10 +49,9 @@ public class SettingsFragment extends PreferenceFragmentCompat
     public SettingsFragment() {
     }
 
-    public static SettingsFragment newInstance(boolean forceShowPermission) {
+    public static SettingsFragment newInstance() {
         SettingsFragment fragment = new SettingsFragment();
         Bundle args = new Bundle();
-        args.putBoolean(SettingsActivity.EXTRA_FROM_BACKGROUND, forceShowPermission);
         fragment.setArguments(args);
         return fragment;
     }

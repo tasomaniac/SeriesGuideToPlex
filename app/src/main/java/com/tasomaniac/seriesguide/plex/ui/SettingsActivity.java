@@ -15,8 +15,6 @@ import com.tasomaniac.seriesguide.plex.R;
 public class SettingsActivity extends AppCompatActivity
         implements ActivityCompat.OnRequestPermissionsResultCallback {
 
-    public static final String EXTRA_FROM_BACKGROUND = "extra_from_background";
-
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
@@ -28,13 +26,11 @@ public class SettingsActivity extends AppCompatActivity
 
         CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(getString(R.string.settings_label));
+        collapsingToolbar.setTitle(getTitle());
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment_container,
-                            SettingsFragment.newInstance(
-                                    getIntent().getBooleanExtra(EXTRA_FROM_BACKGROUND, false)))
+                    .add(R.id.fragment_container, SettingsFragment.newInstance())
                     .commit();
         }
     }
