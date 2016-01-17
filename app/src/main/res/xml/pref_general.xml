@@ -37,7 +37,7 @@
       android:summaryOn="@string/pref_summary_plex_not_installed"
       android:title="@string/pref_title_plex_integration">
       <intent
-        android:targetClass="com.plexapp.plex.activities.MyPlexActivity"
+        android:targetClass="com.plexapp.plex.activities.mobile.PickUserActivity"
         android:targetPackage="com.plexapp.android"/>
     </com.tasomaniac.android.widget.IntegrationPreference>
 
