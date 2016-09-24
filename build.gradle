@@ -28,9 +28,11 @@ ext {
     preDexEnabled = "true".equals(System.getProperty("pre-dex", "true"))
 
     versionMajor = 1
-    versionMinor = 0
-    versionPatch = 1
+    versionMinor = 1
     versionBuild = 0
+
+    versionCode = versionMajor * 10000 + versionMinor * 1000 + versionBuild
+    versionName = "${versionMajor}.${versionMinor}"
 
     compileSdkVersion = 24
     buildToolsVersion = '24.0.2'
