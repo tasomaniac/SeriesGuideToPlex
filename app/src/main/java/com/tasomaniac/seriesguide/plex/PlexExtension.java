@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import com.battlelancer.seriesguide.api.Action;
 import com.battlelancer.seriesguide.api.Episode;
+import com.battlelancer.seriesguide.api.Movie;
 import com.battlelancer.seriesguide.api.SeriesGuideExtension;
 import com.tasomaniac.seriesguide.plex.data.Injector;
 
@@ -27,15 +28,23 @@ public class PlexExtension extends SeriesGuideExtension {
 
     @Override
     protected void onRequest(int episodeIdentifier, Episode episode) {
+        publishActionWithTitleSearch(episodeIdentifier, episode.getTitle());
+    }
 
+    @Override
+    protected void onRequest(int movieIdentifier, Movie movie) {
+        publishActionWithTitleSearch(movieIdentifier, movie.getTitle());
+    }
+
+    private void publishActionWithTitleSearch(int identifier, String title) {
         Intent plexSearchIntent = new Intent(Intent.ACTION_SEARCH)
                 .setComponent(new ComponentName("com.plexapp.android", "com.plexapp.plex.activities.SearchActivity"))
-                .putExtra(SearchManager.QUERY, episode.getTitle());
+                .putExtra(SearchManager.QUERY, title);
 
         analytics.sendScreenView("Extension");
-        analytics.sendEvent("Extension", "Search Plex", episode.getTitle());
+        analytics.sendEvent("Extension", "Search Plex", title);
 
-        publishAction(new Action.Builder(getString(R.string.action_extension), episodeIdentifier)
+        publishAction(new Action.Builder(getString(R.string.action_extension), identifier)
                 .viewIntent(plexSearchIntent)
                 .build());
     }
