@@ -2,8 +2,9 @@ package com.tasomaniac.seriesguide.plex;
 
 import android.app.Application;
 
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.Tracker;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
+import com.crashlytics.android.answers.CustomEvent;
 
 import javax.inject.Singleton;
 
@@ -12,7 +13,7 @@ import dagger.Provides;
 
 /**
  * A module for Android-specific dependencies which require a Context to create.
- *
+ * <p>
  * Created by Said Tahsin Dane on 17/03/15.
  */
 @Module
@@ -23,19 +24,33 @@ final class AppModule {
         this.app = app;
     }
 
-    @Provides @Singleton
+    @Provides
+    @Singleton
     Application application() {
         return app;
     }
 
-    @Provides @Singleton Analytics provideAnalytics() {
+    @Provides
+    @Singleton
+    Analytics provideAnalytics() {
         if (BuildConfig.DEBUG) {
             return new Analytics.DebugAnalytics();
         }
+        return new AnswersAnalytics();
+    }
 
-        GoogleAnalytics googleAnalytics = GoogleAnalytics.getInstance(app);
-        Tracker tracker = googleAnalytics.newTracker(BuildConfig.ANALYTICS_KEY);
-        tracker.setSessionTimeout(300); // ms? s? better be s.
-        return new Analytics.GoogleAnalytics(tracker);
+    private static class AnswersAnalytics implements Analytics {
+        private final Answers answers = Answers.getInstance();
+
+        @Override
+        public void sendScreenView(String screenName) {
+            answers.logContentView(new ContentViewEvent().putContentName(screenName));
+        }
+
+        @Override
+        public void sendEvent(String category, String action, String label) {
+            answers.logCustom(new CustomEvent(category)
+                    .putCustomAttribute(action, label));
+        }
     }
 }
