@@ -18,6 +18,7 @@ package com.tasomaniac.seriesguide.plex.ui;
 
 import android.app.backup.BackupManager;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -44,14 +45,14 @@ public class SettingsFragment extends PreferenceFragmentCompat
   private IntegrationPreference seriesGuidePref;
   private IntegrationPreference plexPref;
 
-  public SettingsFragment() {
+  public static SettingsFragment newInstance() {
+    return new SettingsFragment();
   }
 
-  public static SettingsFragment newInstance() {
-    SettingsFragment fragment = new SettingsFragment();
-    Bundle args = new Bundle();
-    fragment.setArguments(args);
-    return fragment;
+  @Override
+  public void onAttach(Context context) {
+    AndroidSupportInjection.inject(this);
+    super.onAttach(context);
   }
 
   @Override
@@ -64,7 +65,6 @@ public class SettingsFragment extends PreferenceFragmentCompat
 
   @Override
   public void onCreatePreferences(Bundle bundle, String s) {
-    AndroidSupportInjection.inject(this);
     addPreferencesFromResource(R.xml.pref_general);
 
     seriesGuidePref = (IntegrationPreference) findPreference(R.string.pref_key_seriesguide_integration);
