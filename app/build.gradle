@@ -1,100 +1,99 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.jakewharton.hugo'
-apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'com.novoda.android-command'
+apply plugin: 'com.novoda.build-properties'
 apply plugin: 'com.github.triplet.play'
 apply plugin: 'io.fabric'
+apply plugin: 'net.ltgt.errorprone'
 
-Properties local_properties = new Properties()
-File localPropertiesFile = project.rootProject.file('local.properties')
-if (localPropertiesFile.exists()) {
-    local_properties.load(localPropertiesFile.newDataInputStream())
+def signingFile = file('props/release.signing')
+buildProperties {
+  signing.file signingFile.exists() ? signingFile : file('props/debug.signing')
+  secrets.file file('props/secrets.properties')
 }
 
+def secrets = buildProperties.secrets
 def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
-    useLibrary 'org.apache.http.legacy'
+  compileSdkVersion versions.compileSdk
 
-    defaultConfig {
-        applicationId "com.tasomaniac.seriesguide.plex"
-        minSdkVersion 15
-        targetSdkVersion rootProject.ext.compileSdkVersion
-        versionCode rootProject.ext.versionCode
-        versionName rootProject.ext.versionName
-        buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
+  defaultConfig {
+    applicationId 'com.tasomaniac.seriesguide.plex'
+    minSdkVersion versions.minSdk
+    targetSdkVersion versions.compileSdk
+    versionCode versions.versionCode
+    versionName versions.versionName
+    buildConfigField "String", "GIT_SHA", "\"${gitSha}\""
 
-        resConfigs "en"
+    resConfigs "en"
+
+    javaCompileOptions.annotationProcessorOptions {
+      arguments['butterknife.minSdk'] = minSdkVersion.apiString
+      arguments['butterknife.debuggable'] = 'false'
+    }
+  }
+
+  signingConfigs {
+    debug.storeFile file('props/debug.keystore')
+    release.signingConfigProperties buildProperties.signing
+  }
+
+  buildTypes {
+    debug {
+      ext.enableCrashlytics = false
+      applicationIdSuffix '.debug'
+      versionNameSuffix '-debug'
+      signingConfig signingConfigs.debug
     }
 
-    signingConfigs {
-        debug {
-            storeFile file("../distribution/debug.keystore")
-        }
-
-        release {
-            storeFile file("../distribution/" + (local_properties.release_keystore_name ?: "debug.keystore"))
-            keyAlias(local_properties.release_keystore_alias ?: "androiddebugkey")
-            storePassword(local_properties.release_keystore_pwd ?: "android")
-            keyPassword(local_properties.release_keystore_pwd2 ?: "android")
-        }
+    release {
+      minifyEnabled true
+      shrinkResources true
+      proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+      signingConfig signingConfigs.release
     }
+  }
 
-    buildTypes {
-        debug {
-            ext.enableCrashlytics = false
-            applicationIdSuffix ".debug"
-            signingConfig signingConfigs.debug
-            versionNameSuffix "-debug"
-        }
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
 
-        release {
-            minifyEnabled true
-            shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
-        }
-    }
+  lintOptions {
+    textReport true
+    textOutput 'stdout'
 
-    lintOptions {
-        abortOnError true
-        textReport true
-        textOutput 'stdout'
-
-        fatal 'UnusedResources'
-        warning 'InvalidPackage'
-    }
+    lintConfig file('props/lint.xml')
+    // We run a full lint analysis as build part in CI, so skip vital checks for assemble tasks.
+    checkReleaseBuilds false
+  }
 }
 
 play {
-    serviceAccountEmail = local_properties.play_service_account ?: ''
-    pk12File = file("../distribution/" + (local_properties.play_key_file ?: 'no-file.p12'))
-    track = 'beta'
+  serviceAccountEmail = secrets['play_service_account'].or('').string
+  pk12File = file(secrets['play_key_file'].or('no_file.p12').string)
+  track = 'alpha'
+}
+
+configurations {
+  implementation.exclude module: 'support-v4'
+  compile.exclude module: 'support-v4'
 }
 
 dependencies {
-    def supportLibVersion = '24.2.1'
 
-    compile "com.android.support:support-v4:$supportLibVersion"
-    compile "com.android.support:appcompat-v7:$supportLibVersion"
-    compile "com.android.support:preference-v14:$supportLibVersion"
-    compile "com.android.support:design:$supportLibVersion"
+  implementation "com.android.support:support-v4:$versions.supportLib"
+  implementation "com.android.support:appcompat-v7:$versions.supportLib"
+  implementation "com.android.support:preference-v14:$versions.supportLib"
+  implementation "com.android.support:design:$versions.supportLib"
+  implementation 'com.tasomaniac:integrationpreference-support:0.2'
+  implementation 'com.jakewharton.timber:timber:4.6.0'
+  implementation "com.google.dagger:dagger:$versions.dagger"
+  annotationProcessor "com.google.dagger:dagger-compiler:$versions.dagger"
+  implementation 'com.uwetrottmann.seriesguide:seriesguide-api:1.3.0'
+  implementation('com.crashlytics.sdk.android:crashlytics:2.+') {
+    transitive = true
+  }
 
-    compile 'com.jakewharton.timber:timber:4.3.1'
-
-    compile 'com.google.dagger:dagger:2.7'
-    apt 'com.google.dagger:dagger-compiler:2.7'
-    provided 'org.glassfish:javax.annotation:10.0-b28'
-
-    compile 'com.uwetrottmann.seriesguide:seriesguide-api:1.3.0'
-
-    compile 'com.tasomaniac:integrationpreference-support:0.2'
-
-    // Crashlytics Kit
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.4@aar') {
-        transitive = true
-    }
-
-    testCompile 'junit:junit:4.12'
+  testImplementation 'junit:junit:4.12'
 }
