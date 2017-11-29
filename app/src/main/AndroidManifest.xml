@@ -1,54 +1,48 @@
-<manifest package="com.tasomaniac.seriesguide.plex"
-          xmlns:android="http://schemas.android.com/apk/res/android"
-          xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.tasomaniac.seriesguide.plex">
 
   <uses-permission android:name="android.permission.INTERNET"/>
 
-  <!-- Required by RemoteMuzeiArtSource -->
-  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-  <uses-permission android:name="android.permission.WAKE_LOCK"/>
+  <application android:name=".App"
+      android:allowBackup="true"
+      android:fullBackupContent="true"
+      android:icon="@mipmap/ic_launcher"
+      android:label="@string/app_name"
+      android:theme="@style/Theme.SeriesGuideToPlex"
+      tools:ignore="GoogleAppIndexingWarning">
 
-  <application
-    android:name=".App"
-    android:allowBackup="true"
-    android:fullBackupContent="true"
-    android:icon="@mipmap/ic_launcher"
-    android:label="@string/app_name"
-    android:theme="@style/Theme.SeriesGuideToPlex">
-
-    <service
-      android:name=".PlexExtension"
-      android:description="@string/source_description"
-      android:label="@string/source_name"
-      tools:ignore="ExportedService">
+    <receiver android:name=".PlexReceiver"
+        android:description="@string/source_description"
+        android:label="@string/source_name"
+        tools:ignore="ExportedReceiver">
       <intent-filter>
         <action android:name="com.battlelancer.seriesguide.api.SeriesGuideExtension"/>
       </intent-filter>
 
-      <meta-data
-        android:name="settingsActivity"
-        android:value="com.tasomaniac.seriesguide.plex.ui.SettingsActivity"/>
-    </service>
+      <meta-data android:name="settingsActivity"
+          android:value="com.tasomaniac.seriesguide.plex.ui.SettingsActivity"/>
+    </receiver>
 
-    <activity
-      android:name=".ui.SettingsActivity"
-      android:exported="true"
-      android:launchMode="singleTask"/>
+    <service android:name=".PlexExtension"
+        android:exported="true"
+        android:permission="android.permission.BIND_JOB_SERVICE"/>
 
-    <activity-alias
-      android:name=".ui.MainActivity"
-      android:enabled="true"
-      android:targetActivity=".ui.SettingsActivity">
+    <activity android:name=".ui.SettingsActivity"
+        android:exported="true"
+        android:launchMode="singleTask"/>
+
+    <activity-alias android:name=".ui.MainActivity"
+        android:enabled="true"
+        android:targetActivity=".ui.SettingsActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity-alias>
 
-    <meta-data
-      android:name="io.fabric.ApiKey"
-      android:value="12d100ee6072b6f8a57cd79b03942ad742ba6916"/>
+    <meta-data android:name="io.fabric.ApiKey"
+        android:value="12d100ee6072b6f8a57cd79b03942ad742ba6916"/>
   </application>
 
 </manifest>
