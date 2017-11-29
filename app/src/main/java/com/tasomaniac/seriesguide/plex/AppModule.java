@@ -1,15 +1,11 @@
 package com.tasomaniac.seriesguide.plex;
 
-import android.app.Application;
-
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
 import com.crashlytics.android.answers.CustomEvent;
-
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
+import javax.inject.Singleton;
 
 /**
  * A module for Android-specific dependencies which require a Context to create.
@@ -18,39 +14,29 @@ import dagger.Provides;
  */
 @Module
 final class AppModule {
-    private final App app;
 
-    AppModule(App app) {
-        this.app = app;
+  @Provides
+  @Singleton
+  Analytics provideAnalytics() {
+    if (BuildConfig.DEBUG) {
+      return new Analytics.DebugAnalytics();
+    }
+    return new AnswersAnalytics();
+  }
+
+  private static class AnswersAnalytics implements Analytics {
+
+    private final Answers answers = Answers.getInstance();
+
+    @Override
+    public void sendScreenView(String screenName) {
+      answers.logContentView(new ContentViewEvent().putContentName(screenName));
     }
 
-    @Provides
-    @Singleton
-    Application application() {
-        return app;
+    @Override
+    public void sendEvent(String category, String action, String label) {
+      answers.logCustom(new CustomEvent(category)
+          .putCustomAttribute(action, label));
     }
-
-    @Provides
-    @Singleton
-    Analytics provideAnalytics() {
-        if (BuildConfig.DEBUG) {
-            return new Analytics.DebugAnalytics();
-        }
-        return new AnswersAnalytics();
-    }
-
-    private static class AnswersAnalytics implements Analytics {
-        private final Answers answers = Answers.getInstance();
-
-        @Override
-        public void sendScreenView(String screenName) {
-            answers.logContentView(new ContentViewEvent().putContentName(screenName));
-        }
-
-        @Override
-        public void sendEvent(String category, String action, String label) {
-            answers.logCustom(new CustomEvent(category)
-                    .putCustomAttribute(action, label));
-        }
-    }
+  }
 }
