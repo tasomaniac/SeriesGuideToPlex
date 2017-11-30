@@ -25,8 +25,7 @@
       android:summaryOn="@string/pref_summary_seriesguide_not_installed"
       android:title="@string/pref_title_seriesguide_integration">
       <intent
-        android:action="com.battlelancer.seriesguide.api.action.VIEW_EPISODE"
-        android:targetClass="com.battlelancer.seriesguide.ui.ShowsActivity"
+        android:targetClass="com.battlelancer.seriesguide.extensions.ExtensionsConfigurationActivity"
         android:targetPackage="com.battlelancer.seriesguide"/>
     </com.tasomaniac.android.widget.IntegrationPreference>
 

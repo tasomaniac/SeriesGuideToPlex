@@ -39,6 +39,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
     ActivityCompat.OnRequestPermissionsResultCallback {
 
   @Inject Analytics analytics;
+  @Inject PackageManager packageManager;
 
   private static final String LAUNCHER_ACTIVITY_NAME = "com.tasomaniac.seriesguide.plex.ui.MainActivity";
 
@@ -67,14 +68,10 @@ public class SettingsFragment extends PreferenceFragmentCompat
   public void onCreatePreferences(Bundle bundle, String s) {
     addPreferencesFromResource(R.xml.pref_general);
 
-    seriesGuidePref = (IntegrationPreference) findPreference(R.string.pref_key_seriesguide_integration);
+    seriesGuidePref = findPreference(R.string.pref_key_seriesguide_integration);
     seriesGuidePref.setPersistent(true);
-    plexPref = (IntegrationPreference) findPreference(R.string.pref_key_plex_integration);
+    plexPref = findPreference(R.string.pref_key_plex_integration);
     plexPref.setPersistent(true);
-  }
-
-  public Preference findPreference(@StringRes int keyResource) {
-    return findPreference(getString(keyResource));
   }
 
   @Override
@@ -95,9 +92,14 @@ public class SettingsFragment extends PreferenceFragmentCompat
     plexPref.pause();
   }
 
-  @SuppressWarnings("ConstantConditions")
+  @SuppressWarnings("unchecked")
+  public <T extends Preference> T findPreference(@StringRes int keyResource) {
+    return (T) findPreference(getString(keyResource));
+  }
+
   @NonNull
   @Override
+  @SuppressWarnings("ConstantConditions")
   public View getView() {
     return super.getView();
   }
@@ -112,7 +114,7 @@ public class SettingsFragment extends PreferenceFragmentCompat
     if (isAdded() && launcherIntentKey.equals(s)) {
 
       final boolean hideLauncher = sharedPreferences.getBoolean(launcherIntentKey, false);
-      getActivity().getPackageManager().setComponentEnabledSetting(
+      packageManager.setComponentEnabledSetting(
           new ComponentName(
               getActivity().getPackageName(),
               LAUNCHER_ACTIVITY_NAME),

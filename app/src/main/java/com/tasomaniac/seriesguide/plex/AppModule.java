@@ -1,5 +1,6 @@
 package com.tasomaniac.seriesguide.plex;
 
+import android.content.pm.PackageManager;
 import com.crashlytics.android.answers.Answers;
 import com.crashlytics.android.answers.ContentViewEvent;
 import com.crashlytics.android.answers.CustomEvent;
@@ -13,15 +14,20 @@ import javax.inject.Singleton;
  * Created by Said Tahsin Dane on 17/03/15.
  */
 @Module
-final class AppModule {
+abstract class AppModule {
 
   @Provides
   @Singleton
-  Analytics provideAnalytics() {
+  static Analytics provideAnalytics() {
     if (BuildConfig.DEBUG) {
       return new Analytics.DebugAnalytics();
     }
     return new AnswersAnalytics();
+  }
+
+  @Provides
+  static PackageManager packageManager(App app) {
+    return app.getPackageManager();
   }
 
   private static class AnswersAnalytics implements Analytics {
